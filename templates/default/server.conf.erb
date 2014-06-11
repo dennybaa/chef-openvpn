@@ -7,6 +7,13 @@ port  <%= @config[:port] %>
 proto <%= @config[:proto] %>
 dev <%= @config[:dev] %>
 
+<% if @config[:topology] -%>
+topology <%= @config[:topology] %>
+<% if @config[:topology] == "topology" || @config[:topology] == "p2p"-%>
+push <%= "topology #{@config[:topology]}" %>
+<% end -%>
+<% end -%>
+
 <% if @config[:auth][:type] == "cert_passwd" || @config[:auth][:type] == "passwd" -%>
 auth-user-pass-verify /etc/openvpn/<%= @config_name %>/auth.rb via-file
 <% end -%>
