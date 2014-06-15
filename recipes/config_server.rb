@@ -55,7 +55,7 @@ openvpn_process :configs do
       content keys['key'].join("\n")
       owner "root"
       group "openvpn"
-      mode 00640
+      mode 00600
     end
   elsif !config[:autopki] && !config[:autopki][:enabled]
     cookbook_file "/etc/openvpn/#{config_name}/#{config_name}-ca.crt" do
