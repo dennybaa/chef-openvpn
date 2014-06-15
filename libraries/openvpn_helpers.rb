@@ -5,7 +5,7 @@ module OpenvpnHelpers
     return if block.nil?
     if args.any? {|t| ![:configs, :client_configs].include?(t)}
       Chef::Log.error("OpenVPN process_configs wrong arguments: #{args.join(', ')}")
-      raise ArgumentError, "list is expected - :configs[, :client_configs]"
+      raise ArgumentError, "list is expected - [:configs,:client_configs]"
     end
     args.each {|a| _process(a, &block)}
   end

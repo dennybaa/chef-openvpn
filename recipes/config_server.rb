@@ -14,6 +14,14 @@ openvpn_process :configs do
         mode 00640
       end
     end
+  elsif config[:data_bag]
+    keys = data_bag_item(config[:data_bag], config_name)
+    file "/etc/openvpn/#{config_name}/#{config_name}-dh.pem" do
+      content keys['dh'].join("\n")
+      owner "root"
+      group "openvpn"
+      mode 00640
+    end
   else
     cookbook_file "/etc/openvpn/#{config_name}/#{config_name}-dh.pem" do
       source "#{config_name}-dh.pem"
@@ -25,7 +33,31 @@ openvpn_process :configs do
   end
 
   # Don't generate key and certificate files if autopki is enabled
-  unless config[:autopki] && config[:autopki][:enabled]
+  # unless config[:autopki] && config[:autopki][:enabled]
+  if config[:data_bag]
+    keys = data_bag_item(config[:data_bag], config_name)
+
+    file "/etc/openvpn/#{config_name}/#{config_name}-ca.crt" do
+      content keys['ca'].join("\n")
+      owner "root"
+      group "openvpn"
+      mode 00640
+    end
+
+    file "/etc/openvpn/#{config_name}/#{config_name}.crt" do
+      content keys['crt'].join("\n")
+      owner "root"
+      group "openvpn"
+      mode 00640
+    end
+
+    file "/etc/openvpn/#{config_name}/#{config_name}.key" do
+      content keys['key'].join("\n")
+      owner "root"
+      group "openvpn"
+      mode 00640
+    end
+  elsif !config[:autopki] && !config[:autopki][:enabled]
     cookbook_file "/etc/openvpn/#{config_name}/#{config_name}-ca.crt" do
       source "#{config_name}-ca.crt"
       owner "root"
