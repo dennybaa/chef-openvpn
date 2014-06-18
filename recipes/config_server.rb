@@ -32,8 +32,6 @@ openvpn_process :configs do
     end
   end
 
-  # Don't generate key and certificate files if autopki is enabled
-  # unless config[:autopki] && config[:autopki][:enabled]
   if config[:data_bag]
     keys = data_bag_item(config[:data_bag], config_name)
 
