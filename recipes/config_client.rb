@@ -8,7 +8,30 @@ openvpn_process :client_configs do
   # user_name required for given vpn server/config
   user_name = config[:user_name]
 
-  unless config[:autopki] && config[:autopki][:enabled]
+  if config[:data_bag]
+    keys = data_bag_item(config[:data_bag], user_name)
+
+    file "/etc/openvpn/#{config_name}/#{config_name}-ca.crt" do
+      content keys['ca'].join("\n")
+      owner "root"
+      group "openvpn"
+      mode 00640
+    end
+
+    file "/etc/openvpn/#{config_name}/#{user_name}.crt" do
+      content keys['crt'].join("\n")
+      owner "root"
+      group "openvpn"
+      mode 00640
+    end
+
+    file "/etc/openvpn/#{config_name}/#{user_name}.key" do
+      content keys['key'].join("\n")
+      owner "root"
+      group "openvpn"
+      mode 00600
+    end
+  elsif !config[:autopki] && !config[:autopki][:enabled]
     cookbook_file "/etc/openvpn/#{config_name}-#{user_name}-ca.crt" do
       source "#{config_name}-ca.crt"
       owner "root"

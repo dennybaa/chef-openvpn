@@ -16,6 +16,8 @@ openvpn_process :configs, :client_configs do
   config_name = self.conf_name
   config = self.conf
 
+  break unless config[:autopki] && config[:autopki][:enabled]
+
   # Create PKI directory
   # ----
   pki_base = node['openvpn']['autopki']['basedir'] + "/#{config_name}"

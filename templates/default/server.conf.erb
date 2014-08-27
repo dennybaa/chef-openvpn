@@ -7,6 +7,13 @@ port  <%= @config[:port] %>
 proto <%= @config[:proto] %>
 dev <%= @config[:dev] %>
 
+<% if @config[:topology] -%>
+topology <%= @config[:topology] %>
+<% if @config[:topology] == "topology" || @config[:topology] == "p2p"-%>
+push <%= "topology #{@config[:topology]}" %>
+<% end -%>
+<% end -%>
+
 <% if @config[:auth][:type] == "cert_passwd" || @config[:auth][:type] == "passwd" -%>
 auth-user-pass-verify /etc/openvpn/<%= @config_name %>/auth.rb via-file
 <% end -%>
@@ -30,7 +37,7 @@ cert /etc/openvpn/<%= @config_name %>/<%= @config_name %>.crt
 key  /etc/openvpn/<%= @config_name %>/<%= @config_name %>.key
 dh   /etc/openvpn/<%= @config_name %>/<%= @config_name %>-dh.pem
 
-<% if @config[:auth][:type] != "passwd" -%>
+<% if @config[:auth][:type] != "passwd" && ! @config[:allow_duplicate_cn] -%>
 ifconfig-pool-persist /etc/openvpn/<%= @config_name %>/<%= @config_name %>.ipp
 <% end -%>
 
